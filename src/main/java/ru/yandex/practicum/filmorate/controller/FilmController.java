@@ -21,6 +21,7 @@ public class FilmController {
         log.info("GET /films");
         return films.values();
     }
+
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) {
         log.info("Add film {} - Started", film);
