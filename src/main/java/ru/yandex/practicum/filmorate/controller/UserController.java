@@ -18,7 +18,7 @@ import java.util.Map;
 @Slf4j
 public class UserController {
     Map<Long, User> users = new HashMap<>();
-    int id = 1;
+    long id = 1;
 
     @GetMapping
     @Validated(Marker.OnGet.class)

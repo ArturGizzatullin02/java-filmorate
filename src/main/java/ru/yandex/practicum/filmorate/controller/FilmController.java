@@ -15,6 +15,7 @@ import java.util.Map;
 @Slf4j
 public class FilmController {
     Map<Long, Film> films = new HashMap<>();
+    long id = 1;
 
     @GetMapping
     public Collection<Film> getAllFilms() {
@@ -45,9 +46,6 @@ public class FilmController {
     }
 
     private long nextId() {
-        long currentMaxId = films.keySet().stream()
-                .max(Long::compareTo)
-                .orElse(0L);
-        return ++currentMaxId;
+        return id++;
     }
 }

@@ -5,6 +5,8 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Test;
+import org.springframework.validation.annotation.Validated;
+import ru.yandex.practicum.filmorate.validator.Marker;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -18,6 +20,11 @@ public class UserTest {
     static {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.usingContext().getValidator();
+    }
+
+    @Test
+    void shouldBeFalseIfIdIsNull() {
+
     }
 
     @Test
