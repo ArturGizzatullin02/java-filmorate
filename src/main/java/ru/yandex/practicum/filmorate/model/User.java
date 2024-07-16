@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Data
 public class User {
     @NotNull(groups = {Marker.OnUpdate.class, Marker.OnGet.class})
-    private long id;
+    private Long id;
     @Email(message = "Электронная почта должна содержать символ @")
     @NotBlank(message = "Электронная почта не может быть пустой или состоять только из пробелов")
     private String email;
