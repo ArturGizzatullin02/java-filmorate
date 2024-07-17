@@ -14,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FilmController {
     private final FilmService filmService;
+
     @GetMapping
     public Collection<Film> getAll() {
         return filmService.getAll();
@@ -23,6 +24,7 @@ public class FilmController {
     public Film getFilm(@PathVariable long id) {
         return filmService.getFilm(id);
     }
+
     @PostMapping
     public Film add(@Valid @RequestBody Film film) {
         return filmService.add(film);
