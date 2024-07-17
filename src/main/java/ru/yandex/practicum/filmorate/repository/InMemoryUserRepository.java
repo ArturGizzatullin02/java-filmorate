@@ -16,14 +16,6 @@ public class InMemoryUserRepository implements UserRepository {
         users.put(user.getId(), user);
     }
 
-    //    @Override
-//    public void addFriend(long userId, long friendId) {
-//        Set<Long> userFriends = userFriendsId.computeIfAbsent(userId, id -> new HashSet<>());
-//        userFriends.add(friendId);
-//
-//        Set<Long> friendFriendsId = userFriendsId.computeIfAbsent(friendId, id -> new HashSet<>());
-//        friendFriendsId.add(userId);
-//    }
     @Override
     public List<User> addFriend(long userId, long friendId) {
         if (userFriendsId.get(userId) != null) {

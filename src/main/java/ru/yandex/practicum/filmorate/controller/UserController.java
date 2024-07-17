@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.validator.Marker;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Validated
 @RestController
