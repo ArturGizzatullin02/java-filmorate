@@ -19,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+
     @GetMapping
     @Validated(Marker.OnGet.class)
     public Collection<User> getAll() {
@@ -61,5 +62,4 @@ public class UserController {
     public List<User> deleteFriend(@PathVariable long id, @PathVariable long friendId) {
         return userService.removeFriend(id, friendId);
     }
-
 }

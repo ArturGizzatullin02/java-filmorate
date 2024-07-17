@@ -15,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+
     public Collection<User> getAll() {
         log.info("GET /users");
         return userRepository.getAll();
