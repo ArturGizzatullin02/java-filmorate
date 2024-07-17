@@ -25,7 +25,7 @@ public class InMemoryUserRepository implements UserRepository {
 //        friendFriendsId.add(userId);
 //    }
     @Override
-    public void addFriend(long userId, long friendId) {
+    public List<User> addFriend(long userId, long friendId) {
         if (userFriendsId.get(userId) != null) {
             userFriendsId.get(userId).add(friendId);
         } else {
@@ -38,6 +38,12 @@ public class InMemoryUserRepository implements UserRepository {
             userFriendsId.put(friendId, new HashSet<>());
             userFriendsId.get(friendId).add(userId);
         }
+        List<Long> userFriendsIdList = new ArrayList<>(userFriendsId.get(userId));
+        List<User> userFriendsList = new ArrayList<>();
+        for (Long id : userFriendsIdList) {
+            userFriendsList.add(users.get(id));
+        }
+        return userFriendsList;
     }
 
     @Override
@@ -56,8 +62,17 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Set<Long> getFriendsIds(long userId) {
-        return userFriendsId.get(userId);
+    public List<User> getFriends(long userId) {
+        Set<Long> friendsId = userFriendsId.get(userId);
+        if (friendsId == null) {
+            return Collections.emptyList();
+        }
+        List<Long> userFriendsIdList = new ArrayList<>(friendsId);
+        List<User> userFriendsList = new ArrayList<>();
+        for (Long id : userFriendsIdList) {
+            userFriendsList.add(users.get(id));
+        }
+        return userFriendsList;
     }
 
     @Override
@@ -71,7 +86,7 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Set<Long> getMutualFriends(long userId, long friendId) {
+    public List<User> getMutualFriends(long userId, long friendId) {
         Set<Long> commonFriends = new HashSet<>();
         Set<Long> userFriends = userFriendsId.computeIfAbsent(userId, id -> new HashSet<>());
         Set<Long> friendFriends = userFriendsId.computeIfAbsent(friendId, id -> new HashSet<>());
@@ -80,7 +95,12 @@ public class InMemoryUserRepository implements UserRepository {
                 commonFriends.add(id);
             }
         }
-        return commonFriends;
+        List<Long> userFriendsIdList = new ArrayList<>(commonFriends);
+        List<User> userFriendsList = new ArrayList<>();
+        for (Long id : userFriendsIdList) {
+            userFriendsList.add(users.get(id));
+        }
+        return userFriendsList;
     }
 
     @Override
@@ -89,9 +109,18 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public void removeFriend(long userId, long friendId) {
-        userFriendsId.get(userId).remove(friendId);
-        userFriendsId.get(friendId).remove(userId);
+    public List<User> removeFriend(long userId, long friendId) {
+        if (userFriendsId.get(userId).contains(friendId)) {
+            userFriendsId.get(userId).remove(friendId);
+            userFriendsId.get(friendId).remove(userId);
+            List<Long> userFriendsIdList = new ArrayList<>(userFriendsId.get(userId));
+            List<User> userFriendsList = new ArrayList<>();
+            for (Long id : userFriendsIdList) {
+                userFriendsList.add(users.get(id));
+            }
+            return userFriendsList;
+        }
+        return Collections.emptyList();
     }
 
     @Override

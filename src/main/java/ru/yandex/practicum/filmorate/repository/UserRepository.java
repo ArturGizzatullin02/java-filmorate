@@ -16,15 +16,15 @@ public interface UserRepository {
 
     public Map<Long, User> getMap();
 
-    public Set<Long> getFriendsIds(long userId);
+    public List<User> getFriends(long userId);
 
     public Long getFriendById(long userId, long friendId);
 
-    public void addFriend(long userId, long friendId);
+    public List<User> addFriend(long userId, long friendId);
 
-    public void removeFriend(long userId, long friendId);
+    public List<User> removeFriend(long userId, long friendId);
 
-    public Set<Long> getMutualFriends(long userId, long friendId);
+    public List<User> getMutualFriends(long userId, long friendId);
 
     public void remove(long id);
 

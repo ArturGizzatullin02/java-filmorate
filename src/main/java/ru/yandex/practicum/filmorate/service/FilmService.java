@@ -23,6 +23,7 @@ public class FilmService {
     }
 
     public Film getFilm(long id) {
+        log.info("GET /films/{id}");
         return filmRepository.get(id);
     }
 
@@ -34,6 +35,7 @@ public class FilmService {
     }
 
     public void addLike(long id, long userId) {
+        log.info("PUT /films/{id}/like/{userId}");
         filmRepository.addLike(id, userId);
     }
 
@@ -50,10 +52,12 @@ public class FilmService {
     }
 
     public List<Film> getMostPopular(@RequestParam(defaultValue = "10") int count) {
+        log.info("GET /films/popular");
         return filmRepository.getMostPopulars(count);
     }
 
     public void removeLike(long id, long userId) {
+        log.info("DELETE /films/{id}/like/{userId}");
         filmRepository.removeLike(id, userId);
     }
 }
