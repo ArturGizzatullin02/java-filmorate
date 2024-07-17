@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.repository.FilmRepository;
+import ru.yandex.practicum.filmorate.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @Slf4j
 public class FilmService {
     private final FilmRepository filmRepository;
+    private final UserRepository userRepository;
 
     public Collection<Film> getAll() {
         log.info("GET /films");
@@ -36,6 +38,12 @@ public class FilmService {
 
     public void addLike(long id, long userId) {
         log.info("PUT /films/{id}/like/{userId}");
+        if (filmRepository.get(id) == null) {
+            throw new NotFoundException("Фильм с таким ID не найден");
+        }
+        if (userRepository.get(userId) == null) {
+            throw new NotFoundException("Пользователь с таким ID не найден");
+        }
         filmRepository.addLike(id, userId);
     }
 
@@ -58,6 +66,12 @@ public class FilmService {
 
     public void removeLike(long id, long userId) {
         log.info("DELETE /films/{id}/like/{userId}");
+        if (filmRepository.get(id) == null) {
+            throw new NotFoundException("Фильм с таким ID не найден");
+        }
+        if (userRepository.get(userId) == null) {
+            throw new NotFoundException("Пользователь с таким ID не найден");
+        }
         filmRepository.removeLike(id, userId);
     }
 }
