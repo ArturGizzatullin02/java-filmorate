@@ -11,7 +11,7 @@ public class InMemoryFilmRepository implements FilmRepository {
 
     private long nextId() {
         return id++;
-    };
+    }
 
     @Override
     public void add(Film film) {
@@ -60,7 +60,7 @@ public class InMemoryFilmRepository implements FilmRepository {
     @Override
     public void remove(long id) {
         films.remove(id);
-    };
+    }
 
     @Override
     public void removeLike(long filmId, long userId) {
@@ -70,5 +70,5 @@ public class InMemoryFilmRepository implements FilmRepository {
     @Override
     public void update(Film film) {
         films.put(film.getId(), film);
-    };
+    }
 }
