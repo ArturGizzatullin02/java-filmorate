@@ -16,13 +16,28 @@ public class InMemoryUserRepository implements UserRepository {
         users.put(user.getId(), user);
     }
 
+    //    @Override
+//    public void addFriend(long userId, long friendId) {
+//        Set<Long> userFriends = userFriendsId.computeIfAbsent(userId, id -> new HashSet<>());
+//        userFriends.add(friendId);
+//
+//        Set<Long> friendFriendsId = userFriendsId.computeIfAbsent(friendId, id -> new HashSet<>());
+//        friendFriendsId.add(userId);
+//    }
     @Override
     public void addFriend(long userId, long friendId) {
-        Set<Long> userFriends = userFriendsId.computeIfAbsent(userId, id -> new HashSet<>());
-        userFriends.add(friendId);
-
-        Set<Long> friendFriendsId = userFriendsId.computeIfAbsent(friendId, id -> new HashSet<>());
-        friendFriendsId.add(userId);
+        if (userFriendsId.get(userId) != null) {
+            userFriendsId.get(userId).add(friendId);
+        } else {
+            userFriendsId.put(userId, new HashSet<>());
+            userFriendsId.get(userId).add(friendId);
+        }
+        if (userFriendsId.get(friendId) != null) {
+            userFriendsId.get(friendId).add(userId);
+        } else {
+            userFriendsId.put(friendId, new HashSet<>());
+            userFriendsId.get(friendId).add(userId);
+        }
     }
 
     @Override
@@ -41,7 +56,7 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Set<Long> getFriendsId(long userId) {
+    public Set<Long> getFriendsIds(long userId) {
         return userFriendsId.get(userId);
     }
 

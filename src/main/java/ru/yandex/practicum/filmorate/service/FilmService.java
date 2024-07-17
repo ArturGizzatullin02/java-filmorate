@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.service;
 
-import jakarta.xml.bind.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,6 +33,10 @@ public class FilmService {
         return film;
     }
 
+    public void addLike(long id, long userId) {
+        filmRepository.addLike(id, userId);
+    }
+
     public Film update(Film film) {
         log.info("Update film {} - Started", film);
         if (filmRepository.getMap().containsKey(film.getId())) {
@@ -48,5 +51,9 @@ public class FilmService {
 
     public List<Film> getMostPopular(@RequestParam(defaultValue = "10") int count) {
         return filmRepository.getMostPopulars(count);
+    }
+
+    public void removeLike(long id, long userId) {
+        filmRepository.removeLike(id, userId);
     }
 }

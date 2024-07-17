@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.repository.UserRepository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -18,6 +19,14 @@ public class UserService {
     public Collection<User> getAll() {
         log.info("GET /users");
         return userRepository.getAll();
+    }
+
+    public User get(long id) {
+        return userRepository.get(id);
+    }
+
+    public Set<Long> getFriendsIds(long id) {
+        return userRepository.getFriendsIds(id);
     }
 
     public User add(User user) {
@@ -42,9 +51,8 @@ public class UserService {
         return user;
     }
 
-    public Long addFriend(long userId, long friendId) {
+    public void addFriend(long userId, long friendId) {
         userRepository.addFriend(userId, friendId);
-        return userRepository.getFriendById(userId, friendId);
     }
 
     public Long removeFriend(long userId, long friendId) {

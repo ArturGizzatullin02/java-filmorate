@@ -16,7 +16,7 @@ public interface UserRepository {
 
     public Map<Long, User> getMap();
 
-    public Set<Long> getFriendsId(long userId);
+    public Set<Long> getFriendsIds(long userId);
 
     public Long getFriendById(long userId, long friendId);
 
