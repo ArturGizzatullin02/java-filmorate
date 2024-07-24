@@ -5,25 +5,25 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.*;
 
 public interface UserRepository {
-    public void add(User user);
+    void add(User user);
 
-    public Optional<User> get(long id);
+    Optional<User> get(long id);
 
-    public Collection<User> getAll();
+    Collection<User> getAll();
 
     boolean userExists(long id);
 
-    public List<User> getFriends(long userId);
+    List<User> getFriends(long userId);
 
-    public Long getFriendById(long userId, long friendId);
+    Long getFriendById(long userId, long friendId);
 
-    public List<User> addFriend(long userId, long friendId);
+    List<User> addFriend(long userId, long friendId);
 
-    public List<User> removeFriend(long userId, long friendId);
+    List<User> removeFriend(long userId, long friendId);
 
-    public List<User> getMutualFriends(long userId, long friendId);
+    List<User> getMutualFriends(long userId, long friendId);
 
-    public void remove(long id);
+    void remove(long id);
 
-    public void update(User user);
+    void update(User user);
 }

@@ -9,14 +9,12 @@ import ru.yandex.practicum.filmorate.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final FilmService filmService;
 
     public Collection<User> getAll() {
         log.info("GET /users");

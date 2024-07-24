@@ -16,7 +16,6 @@ import java.util.List;
 @Slf4j
 public class FilmService {
     private final FilmRepository filmRepository;
-    private final UserRepository userRepository;
     private final UserService userService;
 
     public Collection<Film> getAll() {
