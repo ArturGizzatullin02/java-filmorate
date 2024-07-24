@@ -32,6 +32,8 @@ public class FilmTest {
     void shouldBeFalseIfNameIsBlank() {
         Film film = new Film();
         film.setName(" ");
+        film.setDuration(90);
+        film.setDescription("Исследования показывают, что занятия йогой способствуют снижению уровня стресса");
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty(), "Имя не может содержать только пробелы");
     }
@@ -41,7 +43,7 @@ public class FilmTest {
         Film film = new Film();
         film.setName("Test");
         film.setDuration(90);
-        System.out.println(film);
+        film.setDescription("Исследования показывают, что занятия йогой способствуют снижению уровня стресса");
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertTrue(violations.isEmpty(), "Если имя не пустое, то ошибки не должно быть");
     }
@@ -86,6 +88,7 @@ public class FilmTest {
         Film film = new Film();
         film.setName("Test");
         film.setDuration(90);
+        film.setDescription("Описание фильма");
         film.setReleaseDate(LocalDate.of(2003, 1, 1));
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertTrue(violations.isEmpty(), "Если дата выхода фильма позже 1895 года, то ошибки не должно быть");
@@ -105,6 +108,7 @@ public class FilmTest {
         Film film = new Film();
         film.setName("Test");
         film.setDuration(90);
+        film.setDescription("Описание фильма");
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertTrue(violations.isEmpty(), "Если длительность фильма положительная, то ошибки не должно быть");
     }
