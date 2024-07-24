@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.repository.FilmRepository;
@@ -18,15 +17,16 @@ import java.util.List;
 public class FilmService {
     private final FilmRepository filmRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     public Collection<Film> getAll() {
         log.info("GET /films");
         return filmRepository.getAll();
     }
 
-    public Film getFilm(long id) {
+    public Film get(long id) {
         log.info("GET /films/{id}");
-        return filmRepository.get(id);
+        return filmRepository.get(id).orElseThrow(() -> new NotFoundException("Film not found"));
     }
 
     public Film add(Film film) {
@@ -38,18 +38,14 @@ public class FilmService {
 
     public void addLike(long id, long userId) {
         log.info("PUT /films/{id}/like/{userId}");
-        if (filmRepository.get(id) == null) {
-            throw new NotFoundException("Фильм с таким ID не найден");
-        }
-        if (userRepository.get(userId) == null) {
-            throw new NotFoundException("Пользователь с таким ID не найден");
-        }
+        get(id);
+        userService.get(userId);
         filmRepository.addLike(id, userId);
     }
 
     public Film update(Film film) {
         log.info("Update film {} - Started", film);
-        if (filmRepository.getMap().containsKey(film.getId())) {
+        if (filmRepository.filmExists(film.getId())) {
             filmRepository.update(film);
             log.info("Update film {} - Finished", film);
         } else {
@@ -59,19 +55,15 @@ public class FilmService {
         return film;
     }
 
-    public List<Film> getMostPopular(@RequestParam(defaultValue = "10") int count) {
+    public List<Film> getMostPopular(int count) {
         log.info("GET /films/popular");
         return filmRepository.getMostPopulars(count);
     }
 
     public void removeLike(long id, long userId) {
         log.info("DELETE /films/{id}/like/{userId}");
-        if (filmRepository.get(id) == null) {
-            throw new NotFoundException("Фильм с таким ID не найден");
-        }
-        if (userRepository.get(userId) == null) {
-            throw new NotFoundException("Пользователь с таким ID не найден");
-        }
+        get(id);
+        userService.get(userId);
         filmRepository.removeLike(id, userId);
     }
 }

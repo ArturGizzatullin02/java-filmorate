@@ -5,16 +5,13 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.*;
 
 public interface UserRepository {
-    Map<Long, User> users = new HashMap<>();
-    Map<Long, Set<Long>> userFriendsId = new HashMap<>();
-
     public void add(User user);
 
-    public User get(long id);
+    public Optional<User> get(long id);
 
     public Collection<User> getAll();
 
-    public Map<Long, User> getMap();
+    boolean userExists(long id);
 
     public List<User> getFriends(long userId);
 

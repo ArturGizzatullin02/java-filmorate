@@ -1,8 +1,11 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.Getter;
+
+@Getter
 public class ErrorResponse {
-    String error;
-    String description;
+    private final String error;
+    private String description;
 
     public ErrorResponse(String error) {
         this.error = error;
@@ -13,11 +16,4 @@ public class ErrorResponse {
         this.description = description;
     }
 
-    public String getError() {
-        return error;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 }

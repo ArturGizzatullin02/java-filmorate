@@ -8,7 +8,10 @@ import java.util.*;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
-    long id = 1;
+    Map<Long, User> users = new HashMap<>();
+    Map<Long, Set<Long>> userFriendsId = new HashMap<>();
+
+    private long id = 1;
 
     @Override
     public void add(User user) {
@@ -18,39 +21,26 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public List<User> addFriend(long userId, long friendId) {
-        if (userFriendsId.get(userId) != null) {
-            userFriendsId.get(userId).add(friendId);
-        } else {
-            userFriendsId.put(userId, new HashSet<>());
-            userFriendsId.get(userId).add(friendId);
-        }
-        if (userFriendsId.get(friendId) != null) {
-            userFriendsId.get(friendId).add(userId);
-        } else {
-            userFriendsId.put(friendId, new HashSet<>());
-            userFriendsId.get(friendId).add(userId);
-        }
-        List<Long> userFriendsIdList = new ArrayList<>(userFriendsId.get(userId));
-        List<User> userFriendsList = new ArrayList<>();
-        for (Long id : userFriendsIdList) {
-            userFriendsList.add(users.get(id));
-        }
-        return userFriendsList;
+        final Set<Long> listOfUserFriendsId = userFriendsId.computeIfAbsent(userId, k -> new HashSet<>());
+        listOfUserFriendsId.add(friendId);
+        final Set<Long> listOfFriendFriendsId = userFriendsId.computeIfAbsent(friendId, k -> new HashSet<>());
+        listOfFriendFriendsId.add(userId);
+        return getUsers(userId);
     }
 
     @Override
-    public User get(long id) {
-        return users.get(id);
+    public Optional<User> get(long id) {
+        return Optional.of(users.get(id));
     }
 
     @Override
     public Collection<User> getAll() {
-        return users.values();
+        return new ArrayList<>(users.values());
     }
 
     @Override
-    public Map<Long, User> getMap() {
-        return users;
+    public boolean userExists(long id) {
+        return users.containsKey(id);
     }
 
     @Override
@@ -59,12 +49,7 @@ public class InMemoryUserRepository implements UserRepository {
         if (friendsId == null) {
             return Collections.emptyList();
         }
-        List<Long> userFriendsIdList = new ArrayList<>(friendsId);
-        List<User> userFriendsList = new ArrayList<>();
-        for (Long id : userFriendsIdList) {
-            userFriendsList.add(users.get(id));
-        }
-        return userFriendsList;
+        return getUsers(friendsId);
     }
 
     @Override
@@ -80,13 +65,19 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getMutualFriends(long userId, long friendId) {
         Set<Long> commonFriends = new HashSet<>();
-        Set<Long> userFriends = userFriendsId.computeIfAbsent(userId, id -> new HashSet<>());
-        Set<Long> friendFriends = userFriendsId.computeIfAbsent(friendId, id -> new HashSet<>());
-        for (Long id : userFriends) {
-            if (friendFriends.contains(id)) {
-                commonFriends.add(id);
+        Set<Long> userFriends = userFriendsId.get(userId);
+        Set<Long> friendFriends = userFriendsId.get(friendId);
+        if (friendFriends != null && userFriends != null) {
+            for (Long id : userFriends) {
+                if (friendFriends.contains(id)) {
+                    commonFriends.add(id);
+                }
             }
         }
+        return getUsers(commonFriends);
+    }
+
+    private List<User> getUsers(Set<Long> commonFriends) {
         List<Long> userFriendsIdList = new ArrayList<>(commonFriends);
         List<User> userFriendsList = new ArrayList<>();
         for (Long id : userFriendsIdList) {
@@ -105,14 +96,18 @@ public class InMemoryUserRepository implements UserRepository {
         if (userFriendsId.get(userId).contains(friendId)) {
             userFriendsId.get(userId).remove(friendId);
             userFriendsId.get(friendId).remove(userId);
-            List<Long> userFriendsIdList = new ArrayList<>(userFriendsId.get(userId));
-            List<User> userFriendsList = new ArrayList<>();
-            for (Long id : userFriendsIdList) {
-                userFriendsList.add(users.get(id));
-            }
-            return userFriendsList;
+            return getUsers(userId);
         }
         return Collections.emptyList();
+    }
+
+    private List<User> getUsers(long userId) {
+        List<Long> userFriendsIdList = new ArrayList<>(userFriendsId.get(userId));
+        List<User> userFriendsList = new ArrayList<>();
+        for (Long id : userFriendsIdList) {
+            userFriendsList.add(users.get(id));
+        }
+        return userFriendsList;
     }
 
     @Override

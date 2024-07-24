@@ -1,7 +1,9 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -22,7 +24,7 @@ public class FilmController {
 
     @GetMapping("{id}")
     public Film getFilm(@PathVariable long id) {
-        return filmService.getFilm(id);
+        return filmService.get(id);
     }
 
     @PostMapping
@@ -41,7 +43,8 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getMostPopular(@RequestParam(defaultValue = "10") int count) {
+    @Validated
+    public List<Film> getMostPopular(@RequestParam(defaultValue = "10") @Positive int count) {
         return filmService.getMostPopular(count);
     }
 

@@ -15,7 +15,6 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/users")
-@Slf4j
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;

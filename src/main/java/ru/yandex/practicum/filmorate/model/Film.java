@@ -17,6 +17,7 @@ public class Film {
     @NotBlank(message = "Название фильма не может быть пустым")
     private String name;
     @Size(max = 200, message = "Название фильма должно быть не более 200 символов")
+    @NotBlank(message = "Описание фильма не может быть пустым")
     private String description;
     @ReleaseDateConstraint
     private LocalDate releaseDate;

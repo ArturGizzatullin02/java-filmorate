@@ -7,7 +7,10 @@ import java.util.*;
 
 @Repository
 public class InMemoryFilmRepository implements FilmRepository {
-    long id = 1;
+    Map<Long, Film> films = new HashMap<>();
+    Map<Long, Set<Long>> likesByUserId = new HashMap<>();
+
+    private long id = 1;
 
     private long nextId() {
         return id++;
@@ -26,13 +29,13 @@ public class InMemoryFilmRepository implements FilmRepository {
     }
 
     @Override
-    public Film get(long id) {
-        return films.get(id);
+    public Optional<Film> get(long id) {
+        return Optional.of(films.get(id));
     }
 
     @Override
     public Collection<Film> getAll() {
-        return films.values();
+        return new ArrayList<>(films.values());
     }
 
     @Override
@@ -53,8 +56,8 @@ public class InMemoryFilmRepository implements FilmRepository {
     }
 
     @Override
-    public Map<Long, Film> getMap() {
-        return films;
+    public boolean filmExists(long id) {
+        return films.containsKey(id);
     }
 
     @Override
