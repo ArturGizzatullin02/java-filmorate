@@ -30,7 +30,7 @@ public class InMemoryFilmRepository implements FilmRepository {
 
     @Override
     public Optional<Film> get(long id) {
-        return Optional.of(films.get(id));
+        return Optional.ofNullable(films.get(id));
     }
 
     @Override

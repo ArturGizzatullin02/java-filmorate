@@ -30,7 +30,7 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public Optional<User> get(long id) {
-        return Optional.of(users.get(id));
+        return Optional.ofNullable(users.get(id));
     }
 
     @Override
