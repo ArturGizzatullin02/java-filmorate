@@ -7,8 +7,8 @@ import java.util.*;
 
 @Repository
 public class InMemoryFilmRepository implements FilmRepository {
-    Map<Long, Film> films = new HashMap<>();
-    Map<Long, Set<Long>> likesByUserId = new HashMap<>();
+    private final Map<Long, Film> films = new HashMap<>();
+    private final Map<Long, Set<Long>> likesByUserId = new HashMap<>();
 
     private long id = 1;
 

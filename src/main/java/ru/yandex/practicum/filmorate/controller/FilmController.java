@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/films")
 @RequiredArgsConstructor
+@Validated
 public class FilmController {
     private final FilmService filmService;
 
@@ -43,7 +44,6 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    @Validated
     public List<Film> getMostPopular(@RequestParam(defaultValue = "10") @Positive int count) {
         return filmService.getMostPopular(count);
     }

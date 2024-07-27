@@ -15,8 +15,6 @@ public interface UserRepository {
 
     List<User> getFriends(long userId);
 
-    Long getFriendById(long userId, long friendId);
-
     List<User> addFriend(long userId, long friendId);
 
     List<User> removeFriend(long userId, long friendId);

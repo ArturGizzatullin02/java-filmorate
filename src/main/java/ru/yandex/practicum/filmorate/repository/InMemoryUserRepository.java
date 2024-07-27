@@ -45,21 +45,7 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public List<User> getFriends(long userId) {
-        Set<Long> friendsId = userFriendsId.get(userId);
-        if (friendsId == null) {
-            return Collections.emptyList();
-        }
-        return getUsers(friendsId);
-    }
-
-    @Override
-    public Long getFriendById(long userId, long friendId) {
-        for (Long id : userFriendsId.get(userId)) {
-            if (id.equals(friendId)) {
-                return id;
-            }
-        }
-        throw new NotFoundException("Друг с таким id не найден");
+        return getUsers(userFriendsId.getOrDefault(userId, Collections.emptySet()));
     }
 
     @Override
