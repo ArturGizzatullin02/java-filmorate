@@ -1,61 +1,63 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.validator.Marker;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @Validated
 @RestController
 @RequestMapping("/users")
-@Slf4j
+@RequiredArgsConstructor
 public class UserController {
-    Map<Long, User> users = new HashMap<>();
-    long id = 1;
+    private final UserService userService;
 
     @GetMapping
     @Validated(Marker.OnGet.class)
-    public Collection<User> getUsers() {
-        log.info("GET /users");
-        return users.values();
+    public Collection<User> getAll() {
+        return userService.getAll();
+    }
+
+    @GetMapping("{id}")
+    public User get(@PathVariable long id) {
+        return userService.get(id);
+    }
+
+    @GetMapping("{id}/friends")
+    public List<User> getFriendsList(@PathVariable long id) {
+        return userService.getFriends(id);
+    }
+
+    @GetMapping("{id}/friends/common/{otherId}")
+    public List<User> getMutualFriends(@PathVariable long id, @PathVariable long otherId) {
+        return userService.getMutualFriends(id, otherId);
     }
 
     @PostMapping
     @Validated(Marker.OnCreate.class)
-    public User addUser(@RequestBody @Valid User user) {
-        log.info("POST /users ==> Started");
-        long newId = nextId();
-        user.setId(newId);
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        users.put(newId, user);
-        log.info("POST /users ==> Finished");
-        return user;
+    public User add(@RequestBody @Valid User user) {
+        return userService.add(user);
+    }
+
+    @PutMapping("{id}/friends/{friendId}")
+    public List<User> addFriend(@PathVariable long id, @PathVariable long friendId) {
+        return userService.addFriend(id, friendId);
     }
 
     @PutMapping
     @Validated(Marker.OnUpdate.class)
-    public User updateUser(@RequestBody @Valid User user) {
-        log.info("PUT /users ==> Started");
-        if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-            log.info("PUT /users ==> Finished");
-        } else {
-            log.info("PUT /users ==> User not found");
-            throw new NotFoundException("Пользователь с таким ID не найден");
-        }
-        return user;
+    public User update(@RequestBody @Valid User user) {
+        return userService.update(user);
     }
 
-    private long nextId() {
-        return id++;
+    @DeleteMapping("{id}/friends/{friendId}")
+    public List<User> deleteFriend(@PathVariable long id, @PathVariable long friendId) {
+        return userService.removeFriend(id, friendId);
     }
 }

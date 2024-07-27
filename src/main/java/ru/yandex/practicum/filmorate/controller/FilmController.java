@@ -1,51 +1,55 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/films")
-@Slf4j
+@RequiredArgsConstructor
+@Validated
 public class FilmController {
-    Map<Long, Film> films = new HashMap<>();
-    long id = 1;
+    private final FilmService filmService;
 
     @GetMapping
-    public Collection<Film> getAllFilms() {
-        log.info("GET /films");
-        return films.values();
+    public Collection<Film> getAll() {
+        return filmService.getAll();
+    }
+
+    @GetMapping("{id}")
+    public Film getFilm(@PathVariable long id) {
+        return filmService.get(id);
     }
 
     @PostMapping
-    public Film addFilm(@Valid @RequestBody Film film) {
-        log.info("Add film {} - Started", film);
-        film.setId(nextId());
-        films.put(film.getId(), film);
-        log.info("Add film {} - Finished", film);
-        return film;
+    public Film add(@Valid @RequestBody Film film) {
+        return filmService.add(film);
+    }
+
+    @PutMapping("{id}/like/{userId}")
+    public void addLike(@PathVariable long id, @PathVariable long userId) {
+        filmService.addLike(id, userId);
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) {
-        log.info("Update film {} - Started", film);
-        if (films.containsKey(film.getId())) {
-            films.put(film.getId(), film);
-            log.info("Update film {} - Finished", film);
-        } else {
-            log.info("PUT /films ==> Film not found");
-            throw new NotFoundException("Фильм с таким ID не найден");
-        }
-        return film;
+    public Film update(@Valid @RequestBody Film film) {
+        return filmService.update(film);
     }
 
-    private long nextId() {
-        return id++;
+    @GetMapping("/popular")
+    public List<Film> getMostPopular(@RequestParam(defaultValue = "10") @Positive int count) {
+        return filmService.getMostPopular(count);
+    }
+
+    @DeleteMapping("{id}/like/{userId}")
+    public void deleteLike(@PathVariable long id, @PathVariable long userId) {
+        filmService.removeLike(id, userId);
     }
 }

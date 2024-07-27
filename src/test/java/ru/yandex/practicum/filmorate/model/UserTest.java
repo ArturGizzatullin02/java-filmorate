@@ -56,6 +56,8 @@ public class UserTest {
         User user = new User();
         user.setEmail("emailTest@gmail.com");
         user.setLogin("test");
+        user.setBirthday(LocalDate.now());
+        user.setName("name");
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertTrue(violations.isEmpty(), "Если почта не пустая, не состоит только из пробелов и содержит @" +
                 ", то ошибки быть не должно");
@@ -83,6 +85,8 @@ public class UserTest {
         User user = new User();
         user.setLogin("test");
         user.setEmail("emailTest@gmail.com");
+        user.setBirthday(LocalDate.now());
+        user.setName("name");
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertTrue(violations.isEmpty(), "Если логин не пустой и не состоит только из пробелов" +
                 ", то ошибки быть не должно");
