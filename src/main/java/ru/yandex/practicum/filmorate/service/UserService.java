@@ -23,7 +23,7 @@ public class UserService {
 
     public User get(long id) {
         log.info("GET /users");
-        return userRepository.get(id).orElseThrow(() -> new NotFoundException("Пользователь с данным ID не найден"));
+        return userRepository.get(id).orElseThrow(() -> new NotFoundException("Пользователь с данным ID не найден", id));
     }
 
     public List<User> getFriends(long id) {
@@ -48,7 +48,7 @@ public class UserService {
             log.info("PUT /users ==> Finished");
         } else {
             log.info("PUT /users ==> User not found");
-            throw new NotFoundException("Пользователь с таким ID не найден");
+            throw new NotFoundException("Пользователь с таким ID не найден", user.getId());
         }
         return user;
     }

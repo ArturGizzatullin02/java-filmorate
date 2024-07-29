@@ -31,7 +31,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(NotFoundException e) {
-        log.debug("Получен статус 404 Not Found {}", e.getMessage(), e);
+        log.debug("Получен статус 404 ID: {} Not Found {}.", e.getId(), e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
 }

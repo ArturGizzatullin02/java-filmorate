@@ -32,7 +32,7 @@ public class FilmService {
 
     public Film get(long id) {
         log.info("GET /films/{id}");
-        return filmRepository.get(id).orElseThrow(() -> new NotFoundException("Фильм с данным ID не найден"));
+        return filmRepository.get(id).orElseThrow(() -> new NotFoundException("Фильм с данным ID не найден", id));
     }
 
     public Film add(Film film) {
@@ -46,7 +46,7 @@ public class FilmService {
     public void addLike(long id, long userId) {
         log.info("PUT /films/{id}/like/{userId}");
         get(id);
-        userRepository.get(userId).orElseThrow(() -> new NotFoundException("Пользователь с данным ID не найден"));
+        userRepository.get(userId).orElseThrow(() -> new NotFoundException("Пользователь с данным ID не найден", id));
         filmRepository.addLike(id, userId);
     }
 
@@ -59,7 +59,7 @@ public class FilmService {
             log.info("Film is updated: {}", updatedFilm);
             return updatedFilm;
         }
-        throw new NotFoundException("Фильм не найден");
+        throw new NotFoundException("Фильм не найден", film.getId());
     }
 
     public List<Film> getMostPopular(int count) {
@@ -70,7 +70,7 @@ public class FilmService {
     public void removeLike(long id, long userId) {
         log.info("DELETE /films/{id}/like/{userId}");
         get(id);
-        userRepository.get(userId).orElseThrow(() -> new NotFoundException("Пользователь с данным ID не найден"));
+        userRepository.get(userId).orElseThrow(() -> new NotFoundException("Пользователь с данным ID не найден", userId));
         filmRepository.removeLike(id, userId);
     }
 

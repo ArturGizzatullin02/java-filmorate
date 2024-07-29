@@ -23,7 +23,7 @@ public class JdbcUserRepository implements UserRepository {
         String sqlQuery = "INSERT INTO USERS (EMAIL, LOGIN, USER_NAME, BIRTHDAY) " +
                 "VALUES (:EMAIL, :LOGIN, :USER_NAME, :BIRTHDAY);";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbc.update(sqlQuery, user.toMap(), keyHolder);
+        jdbc.update(sqlQuery, mapper.toMap(user), keyHolder);
         user.setId(keyHolder.getKeyAs(Long.class));
         return user;
     }
@@ -60,7 +60,7 @@ public class JdbcUserRepository implements UserRepository {
         String sqlQuery = "UPDATE USERS SET EMAIL = :EMAIL, LOGIN = :LOGIN, USER_NAME = :USER_NAME," +
                 " BIRTHDAY = :BIRTHDAY WHERE USER_ID = :USER_ID;";
 
-        jdbc.update(sqlQuery, user.toMap());
+        jdbc.update(sqlQuery, mapper.toMap(user));
     }
 
     @Override

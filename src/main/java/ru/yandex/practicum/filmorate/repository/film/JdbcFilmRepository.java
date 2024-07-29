@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.repository.film;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -13,8 +12,6 @@ import ru.yandex.practicum.filmorate.mapper.FilmRowMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 @Repository
@@ -22,32 +19,6 @@ import java.util.*;
 public class JdbcFilmRepository implements FilmRepository {
     private final NamedParameterJdbcOperations jdbc;
     private final FilmRowMapper mapper;
-
-    private class FilmsResultSetExtractor implements ResultSetExtractor<Collection<Film>> {
-        @Override
-        public Collection<Film> extractData(ResultSet rs) throws SQLException, DataAccessException {
-            Collection<Film> films = new LinkedList<>();
-
-            Film film = null;
-            while (rs.next()) {
-                if (film == null) {
-                    film = mapper.mapRow(rs, rs.getRow());
-                } else if (!film.getId().equals(rs.getLong("FILM_ID"))) {
-                    films.add(film);
-                    film = mapper.mapRow(rs, rs.getRow());
-                }
-                long genreId = rs.getInt("GENRE_ID");
-                if (!rs.wasNull()) {
-                    assert film != null;
-                    film.getGenres().add(new Genre(genreId, rs.getString("GENRE_NAME")));
-                }
-            }
-            if (film != null) {
-                films.add(film);
-            }
-            return films;
-        }
-    }
 
     private void setFilmGenres(Film film) {
         String sqlQuery = "DELETE FROM FILM_GENRE WHERE FILM_ID = :FILM_ID;";
@@ -70,7 +41,7 @@ public class JdbcFilmRepository implements FilmRepository {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update("INSERT INTO FILMS (FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATING_ID)" +
                         " VALUES (:FILM_NAME, :DESCRIPTION, :RELEASE_DATE, :DURATION, :RATING_ID);",
-                film.toMap(), keyHolder, new String[]{"FILM_ID"});
+                mapper.toMap(film), keyHolder, new String[]{"FILM_ID"});
         film.setId(keyHolder.getKeyAs(Long.class));
         setFilmGenres(film);
         return film;
@@ -113,7 +84,7 @@ public class JdbcFilmRepository implements FilmRepository {
                 "LEFT JOIN FILM_GENRE AS fg ON f.FILM_ID = fg.FILM_ID " +
                 "LEFT JOIN GENRES AS g ON fg.GENRE_ID = g.GENRE_ID " +
                 "ORDER BY f.FILM_ID;";
-        return jdbc.query(sqlQuery, new FilmsResultSetExtractor());
+        return jdbc.query(sqlQuery, (ResultSetExtractor<Collection<Film>>) mapper);
     }
 
     @Override
@@ -121,7 +92,7 @@ public class JdbcFilmRepository implements FilmRepository {
         String sqlQuery = "UPDATE FILMS SET FILM_NAME = :FILM_NAME, DESCRIPTION = :DESCRIPTION," +
                 " RELEASE_DATE = :RELEASE_DATE, DURATION = :DURATION, RATING_ID = :RATING_ID " +
                 "WHERE FILM_ID = :FILM_ID;";
-        jdbc.update(sqlQuery, film.toMap());
+        jdbc.update(sqlQuery, mapper.toMap(film));
         setFilmGenres(film);
 
         return film;
@@ -157,7 +128,7 @@ public class JdbcFilmRepository implements FilmRepository {
                 "ORDER BY p.likesCount DESC, f.FILM_ID;";
 
         return (List<Film>) jdbc.query(sqlQuery, new MapSqlParameterSource("COUNT", count),
-                new FilmsResultSetExtractor());
+                (ResultSetExtractor<Collection<Film>>) mapper);
     }
 
     @Override

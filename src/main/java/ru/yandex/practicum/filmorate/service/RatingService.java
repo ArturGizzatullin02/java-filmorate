@@ -17,7 +17,7 @@ public class RatingService {
 
     public Rating get(long id) {
         log.debug("Get rating with id {}", id);
-        return ratingRepository.get(id).orElseThrow(() -> new NotFoundException("Рейтинг не найден"));
+        return ratingRepository.get(id).orElseThrow(() -> new NotFoundException("Рейтинг не найден", id));
     }
 
     public Collection<Rating> getAll() {

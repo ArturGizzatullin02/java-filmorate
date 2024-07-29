@@ -17,7 +17,7 @@ public class GenreService {
 
     public Genre get(long id) {
         log.debug("Get genre by id: {}", id);
-        return genreRepository.get(id).orElseThrow(() -> new NotFoundException("Жанр не найден"));
+        return genreRepository.get(id).orElseThrow(() -> new NotFoundException("Жанр не найден", id));
     }
 
     public Collection<Genre> getAll() {
