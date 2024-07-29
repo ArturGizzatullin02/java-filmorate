@@ -4,18 +4,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.repository.FilmRepository;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.repository.film.FilmRepository;
+import ru.yandex.practicum.filmorate.repository.genre.GenreRepository;
+import ru.yandex.practicum.filmorate.repository.rating.RatingRepository;
+import ru.yandex.practicum.filmorate.repository.user.UserRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class FilmService {
     private final FilmRepository filmRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final GenreRepository genreRepository;
+    private final RatingRepository ratingRepository;
 
     public Collection<Film> getAll() {
         log.info("GET /films");
@@ -24,33 +32,34 @@ public class FilmService {
 
     public Film get(long id) {
         log.info("GET /films/{id}");
-        return filmRepository.get(id).orElseThrow(() -> new NotFoundException("Film not found"));
+        return filmRepository.get(id).orElseThrow(() -> new NotFoundException("Фильм с данным ID не найден"));
     }
 
     public Film add(Film film) {
         log.info("Add film {} - Started", film);
-        filmRepository.add(film);
+        ratingExists(film);
+        genreExists(film);
         log.info("Add film {} - Finished", film);
-        return film;
+        return filmRepository.add(film);
     }
 
     public void addLike(long id, long userId) {
         log.info("PUT /films/{id}/like/{userId}");
         get(id);
-        userService.get(userId);
+        userRepository.get(userId).orElseThrow(() -> new NotFoundException("Пользователь с данным ID не найден"));
         filmRepository.addLike(id, userId);
     }
 
     public Film update(Film film) {
         log.info("Update film {} - Started", film);
-        if (filmRepository.filmExists(film.getId())) {
-            filmRepository.update(film);
-            log.info("Update film {} - Finished", film);
-        } else {
-            log.info("PUT /films ==> Film not found");
-            throw new NotFoundException("Фильм с таким ID не найден");
+        if (filmRepository.get(film.getId()).isPresent()) {
+            ratingExists(film);
+            genreExists(film);
+            Film updatedFilm = filmRepository.update(film);
+            log.info("Film is updated: {}", updatedFilm);
+            return updatedFilm;
         }
-        return film;
+        throw new NotFoundException("Фильм не найден");
     }
 
     public List<Film> getMostPopular(int count) {
@@ -61,7 +70,23 @@ public class FilmService {
     public void removeLike(long id, long userId) {
         log.info("DELETE /films/{id}/like/{userId}");
         get(id);
-        userService.get(userId);
+        userRepository.get(userId).orElseThrow(() -> new NotFoundException("Пользователь с данным ID не найден"));
         filmRepository.removeLike(id, userId);
+    }
+
+    private void ratingExists(Film film) {
+        if (film.getMpa() != null && !ratingRepository.ratingExists(film.getMpa().getId())) {
+            throw new ValidationException("Рейтинг не найден. Фильм не может быть обновлен");
+        }
+    }
+
+    private void genreExists(Film film) {
+        if (!genreRepository.genreExists(
+                film.getGenres().stream()
+                        .map(Genre::getId)
+                        .collect(Collectors.toList()))
+        ) {
+            throw new ValidationException("Жанр не найден. Фильм не может быть обновлен");
+        }
     }
 }

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.repository.UserRepository;
+import ru.yandex.practicum.filmorate.repository.user.UserRepository;
 
 import java.util.Collection;
 import java.util.List;
@@ -43,7 +43,7 @@ public class UserService {
     public User update(User user) {
         log.info("PUT /users ==> Started");
         validateUserName(user);
-        if (userRepository.userExists(user.getId())) {
+        if (userRepository.get(user.getId()).isPresent()) {
             userRepository.update(user);
             log.info("PUT /users ==> Finished");
         } else {
@@ -53,21 +53,21 @@ public class UserService {
         return user;
     }
 
-    public List<User> addFriend(long userId, long friendId) {
+    public void addFriend(long userId, long friendId) {
         log.info("PUT /users/{id}/friends/{friendId}");
         get(friendId);
         get(userId);
-        return userRepository.addFriend(userId, friendId);
+        userRepository.addFriend(userId, friendId);
     }
 
-    public List<User> removeFriend(long userId, long friendId) {
+    public void removeFriend(long userId, long friendId) {
         log.info("DELETE /users/{id}/friends/{friendId}");
         get(friendId);
         get(userId);
         if (!userRepository.getFriends(userId).contains(get(friendId))) {
-            return userRepository.getFriends(userId);
+            userRepository.getFriends(userId);
         }
-        return userRepository.removeFriend(userId, friendId);
+        userRepository.removeFriend(userId, friendId);
     }
 
     public List<User> getMutualFriends(long userId, long friendId) {

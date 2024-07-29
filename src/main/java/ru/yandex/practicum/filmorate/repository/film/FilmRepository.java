@@ -1,11 +1,11 @@
-package ru.yandex.practicum.filmorate.repository;
+package ru.yandex.practicum.filmorate.repository.film;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
 
 public interface FilmRepository {
-    void add(Film film);
+    Film add(Film film);
 
     void addLike(long filmId, long userId);
 
@@ -21,5 +21,5 @@ public interface FilmRepository {
 
     void removeLike(long filmId, long userId);
 
-    void update(Film film);
+    Film update(Film film);
 }

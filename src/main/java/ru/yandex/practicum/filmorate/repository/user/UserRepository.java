@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.repository;
+package ru.yandex.practicum.filmorate.repository.user;
 
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -15,9 +15,9 @@ public interface UserRepository {
 
     List<User> getFriends(long userId);
 
-    List<User> addFriend(long userId, long friendId);
+    void addFriend(long userId, long friendId);
 
-    List<User> removeFriend(long userId, long friendId);
+    void removeFriend(long userId, long friendId);
 
     List<User> getMutualFriends(long userId, long friendId);
 
