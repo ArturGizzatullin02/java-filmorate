@@ -22,6 +22,6 @@ VALUES
 INSERT INTO FILMS
 (FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATING_ID)
 VALUES
-    ('troya', 'brave man', '1998-06-17', 90, 5),
+    ('troya', 'brave men', '1998-06-17', 90, 5),
     ('vampire', 'sumerki', '2017-02-08', 100, 2),
     ('alley', 'autumn film', '2005-09-10', 120, 2);

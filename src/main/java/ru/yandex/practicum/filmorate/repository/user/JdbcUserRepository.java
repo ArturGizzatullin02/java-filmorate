@@ -19,12 +19,13 @@ public class JdbcUserRepository implements UserRepository {
     private final UserRowMapper mapper;
 
     @Override
-    public void add(User user) {
+    public User add(User user) {
         String sqlQuery = "INSERT INTO USERS (EMAIL, LOGIN, USER_NAME, BIRTHDAY) " +
                 "VALUES (:EMAIL, :LOGIN, :USER_NAME, :BIRTHDAY);";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update(sqlQuery, user.toMap(), keyHolder);
         user.setId(keyHolder.getKeyAs(Long.class));
+        return user;
     }
 
     @Override

@@ -80,7 +80,7 @@ public class JdbcFilmRepository implements FilmRepository {
     public boolean filmExists(long id) {
         String sqlQuery = "SELECT COUNT(*) FROM FILMS WHERE FILM_ID = :FILM_ID;";
         return Optional.ofNullable(jdbc.queryForObject(sqlQuery, new MapSqlParameterSource("FILM_ID", id),
-                Long.class)).isPresent();
+                Integer.class)).isPresent();
     }
 
     @Override

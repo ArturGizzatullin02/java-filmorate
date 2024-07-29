@@ -5,7 +5,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.*;
 
 public interface UserRepository {
-    void add(User user);
+    User add(User user);
 
     Optional<User> get(long id);
 
