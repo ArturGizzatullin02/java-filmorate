@@ -19,7 +19,7 @@ public class JdbcRatingRepository implements RatingRepository {
 
     @Override
     public Optional<Rating> get(long id) {
-        String sqlQuery = "SELECT * FROM RATINGS WHERE RATING_ID = :RATING_ID";
+        String sqlQuery = "SELECT * FROM RATINGS WHERE RATING_ID = :RATING_ID ORDER BY RATING_ID;";
         MapSqlParameterSource paramSource = new MapSqlParameterSource("RATING_ID", id);
 
         List<Rating> result = jdbc.query(sqlQuery, paramSource, mapper);

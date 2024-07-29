@@ -19,7 +19,7 @@ public class JdbcGenreRepository implements GenreRepository {
 
     @Override
     public Optional<Genre> get(long id) {
-        String sqlQuery = "SELECT * FROM GENRES WHERE GENRE_ID = :GENRE_ID;";
+        String sqlQuery = "SELECT * FROM GENRES WHERE GENRE_ID = :GENRE_ID ORDER BY GENRE_ID;";
         MapSqlParameterSource paramSource = new MapSqlParameterSource("GENRE_ID", id);
 
         List<Genre> result = jdbc.query(sqlQuery, paramSource, mapper);
