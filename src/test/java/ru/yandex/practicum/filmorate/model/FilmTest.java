@@ -44,6 +44,8 @@ public class FilmTest {
         film.setName("Test");
         film.setDuration(90);
         film.setDescription("Исследования показывают, что занятия йогой способствуют снижению уровня стресса");
+        film.setReleaseDate(LocalDate.now());
+        film.setMpa(new Rating());
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertTrue(violations.isEmpty(), "Если имя не пустое, то ошибки не должно быть");
     }
@@ -69,6 +71,7 @@ public class FilmTest {
         film.setName("Test");
         film.setDuration(90);
         film.setDescription("Описание фильма");
+        film.setMpa(new Rating());
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertTrue(violations.isEmpty(), "Если описание меньше 200 символов, то ошибки не должно быть");
     }
@@ -90,6 +93,7 @@ public class FilmTest {
         film.setDuration(90);
         film.setDescription("Описание фильма");
         film.setReleaseDate(LocalDate.of(2003, 1, 1));
+        film.setMpa(new Rating());
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertTrue(violations.isEmpty(), "Если дата выхода фильма позже 1895 года, то ошибки не должно быть");
     }
@@ -109,6 +113,7 @@ public class FilmTest {
         film.setName("Test");
         film.setDuration(90);
         film.setDescription("Описание фильма");
+        film.setMpa(new Rating());
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertTrue(violations.isEmpty(), "Если длительность фильма положительная, то ошибки не должно быть");
     }

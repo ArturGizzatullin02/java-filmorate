@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.repository.UserRepository;
+import ru.yandex.practicum.filmorate.repository.user.UserRepository;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +23,7 @@ public class UserService {
 
     public User get(long id) {
         log.info("GET /users");
-        return userRepository.get(id).orElseThrow(() -> new NotFoundException("Пользователь с данным ID не найден"));
+        return userRepository.get(id).orElseThrow(() -> new NotFoundException("Пользователь с данным ID не найден", id));
     }
 
     public List<User> getFriends(long id) {
@@ -43,31 +43,31 @@ public class UserService {
     public User update(User user) {
         log.info("PUT /users ==> Started");
         validateUserName(user);
-        if (userRepository.userExists(user.getId())) {
+        if (userRepository.get(user.getId()).isPresent()) {
             userRepository.update(user);
             log.info("PUT /users ==> Finished");
         } else {
             log.info("PUT /users ==> User not found");
-            throw new NotFoundException("Пользователь с таким ID не найден");
+            throw new NotFoundException("Пользователь с таким ID не найден", user.getId());
         }
         return user;
     }
 
-    public List<User> addFriend(long userId, long friendId) {
+    public void addFriend(long userId, long friendId) {
         log.info("PUT /users/{id}/friends/{friendId}");
         get(friendId);
         get(userId);
-        return userRepository.addFriend(userId, friendId);
+        userRepository.addFriend(userId, friendId);
     }
 
-    public List<User> removeFriend(long userId, long friendId) {
+    public void removeFriend(long userId, long friendId) {
         log.info("DELETE /users/{id}/friends/{friendId}");
         get(friendId);
         get(userId);
         if (!userRepository.getFriends(userId).contains(get(friendId))) {
-            return userRepository.getFriends(userId);
+            userRepository.getFriends(userId);
         }
-        return userRepository.removeFriend(userId, friendId);
+        userRepository.removeFriend(userId, friendId);
     }
 
     public List<User> getMutualFriends(long userId, long friendId) {
